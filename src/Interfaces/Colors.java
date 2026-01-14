@@ -1,13 +1,16 @@
 package Interfaces;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public enum Colors {
     BLACK, CYAN, BLUE, ORANGE, YELLOW, GREEN, PURPLE, RED;
 
     public static Colors random() {
-        Colors[] types = values();
+        Colors[] types = Arrays.stream(values())
+                .filter(color -> color != Colors.BLACK)
+                .toArray(Colors[]::new);
         int index = ThreadLocalRandom.current().nextInt(types.length);
         return types[index];
     }

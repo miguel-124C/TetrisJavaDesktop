@@ -3,7 +3,6 @@ package Presentation;
 import Classes.Display;
 import Classes.Matrix;
 import Interfaces.Colors;
-import Presentation.panel.TetrisPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class TetrisFrame extends JFrame {
     private final Matrix matrix = new Matrix(20, 10, Colors.BLACK);
     private final Display display = new Display();
+    private JPanel mainPanel;
     private final TetrisPanel tetrisPanel;
     private final SidePanel sidePanel;
     public TetrisFrame() {
@@ -22,14 +22,13 @@ public class TetrisFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
 
-        display.changePiece();
         // Crear el panel principal
         tetrisPanel = new TetrisPanel(matrix, display);
         // Crear panel lateral con información
         sidePanel = new SidePanel(display);
 
         // Usar BorderLayout para organizar
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         mainPanel.setBackground(new Color(30, 30, 30));
 
@@ -47,9 +46,8 @@ public class TetrisFrame extends JFrame {
 
         add(mainPanel);
         pack();
-        setLocationRelativeTo(null); // Centrar en pantalla
+        setLocationRelativeTo(null);
 
-        display.changePiece();
         startGame();
     }
 
@@ -60,47 +58,81 @@ public class TetrisFrame extends JFrame {
                 var currentPiece = display.getCurrentPiece();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
-                        System.out.println("ARRIBA presionado");
+                        currentPiece.rotate();
                         break;
                     case KeyEvent.VK_DOWN:
                         currentPiece.MoveDown();
                         break;
                     case KeyEvent.VK_LEFT:
-                        currentPiece.Move(false);
+                        if (matrix.canMoveX( currentPiece, false )) {
+                            currentPiece.Move(false);
+                        }
                         break;
                     case KeyEvent.VK_RIGHT:
-                        currentPiece.Move(true);
+                        if (matrix.canMoveX( currentPiece, true )) {
+                            currentPiece.Move(true);
+                        }
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        try {
+                            matrix.moveToShadow(display);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
                         break;
                 }
+                tetrisPanel.updateMatrix();
             }
         });
     }
 
     private void startGame() {
+        display.changePiece();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         Runnable task = new Runnable() {
-            private int count = 0;
-
             @Override
             public void run() {
-                display.setScore( display.getScore() + 1 );
-                display.setLevel( display.getLevel() + 1 );
-
                 sidePanel.updatePanel();
+                var currentPiece = display.getCurrentPiece();
+                if (!currentPiece.canMove) {
+                    display.changePiece();
+                }
+                display.getCurrentPiece().MoveDown();
 
                 tetrisPanel.updateMatrix();
 
-                System.out.println("Tarea ejecutada: " + (++count));
-
-                if (count >= 500) {
-                    scheduler.shutdown();
-                }
+                checkGameOver(scheduler);
             }
         };
 
-        // Programar tarea cada 1 segundo
-        scheduler.scheduleAtFixedRate(task, 0, 1, TimeUnit.SECONDS);
+        scheduler.scheduleAtFixedRate(task, 1, 1000, TimeUnit.MILLISECONDS);
     }
 
+    public void checkGameOver(ScheduledExecutorService scheduler) {
+        if (matrix.getHeightValues() == 0) {
+            scheduler.shutdown();
+            showGameOverDialog(this);
+        }
+    }
+    private void showGameOverDialog(JFrame parentFrame) {
+        var confirmDialog = JOptionPane.showConfirmDialog(
+                parentFrame,
+                "¡Game Over!, Try again?",
+                "Game Over",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        switch (confirmDialog) {
+            case JOptionPane.YES_OPTION:
+//                restartGame(parentFrame);
+                break;
+
+            case JOptionPane.NO_OPTION:
+            case JOptionPane.CLOSED_OPTION:
+                parentFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                parentFrame.dispose();
+                break;
+        }
+    }
 }

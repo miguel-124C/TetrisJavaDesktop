@@ -3,6 +3,7 @@ package Presentation;
 import Classes.Display;
 import Classes.Piece;
 import Interfaces.Colors;
+import Interfaces.TypePiece;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,7 @@ public class SidePanel extends JPanel {
     private final Display display;
     private JLabel jlabelScore;
     private JLabel jlabelLevel;
+    private JLabel jlabelLines;
 
     public SidePanel(Display display) {
         this.display = display;
@@ -38,8 +40,9 @@ public class SidePanel extends JPanel {
         add(createInfoPanel("LEVEL", this.jlabelLevel));
         add(Box.createRigidArea(new Dimension(0, 15)));
         // Panel de líneas
-//        add(createInfoPanel("LINES", "0"));
-//        add(Box.createRigidArea(new Dimension(0, 30)));
+        this.jlabelLines = new JLabel(String.valueOf(display.getLines()), SwingConstants.CENTER);
+        add(createInfoPanel("LINES", this.jlabelLines));
+        add(Box.createRigidArea(new Dimension(0, 30)));
         // Panel siguiente pieza
         add(createNextPiecePanel( display ));
         add(Box.createRigidArea(new Dimension(0, 30)));
@@ -62,12 +65,11 @@ public class SidePanel extends JPanel {
     public void updatePanel() {
         var score = String.valueOf(display.getScore());
         var level = String.valueOf(display.getLevel());
+        var lines = String.valueOf(display.getLines());
 
         jlabelScore.setText( score );
         jlabelLevel.setText( level );
-
-        jlabelScore.repaint();
-        jlabelLevel.repaint();
+        jlabelLines.setText( lines );
         repaint();
     }
     private JPanel createInfoPanel(String title, JLabel label) {
@@ -98,9 +100,8 @@ public class SidePanel extends JPanel {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
 
-                // Dibujar pieza siguiente (O - cuadrada amarilla)
                 var nextPiece = display.getNextPiece();
-                var cordsNextPiece = Piece.getCordsByType(nextPiece.getTypePiece());
+                var cordsNextPiece = TypePiece.getCordsByType(nextPiece.getTypePiece());
 
                 int cellSize = 25;
                 int startX = (getWidth() - 3 * cellSize) / 2;
@@ -111,12 +112,12 @@ public class SidePanel extends JPanel {
                     int x = startX + c.x * cellSize;
                     int y = startY + c.y * cellSize;
 
-                    // Dibujar bloque
+                    // DrawBlock
                     var colorPiece = Colors.getColor(nextPiece.getColor());
                     g2d.setColor(colorPiece);
                     g2d.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
 
-                    // Borde
+                    // Draw border
                     g2d.setColor(colorPiece.brighter());
                     g2d.drawRect(x + 1, y + 1, cellSize - 3, cellSize - 3);
                 });

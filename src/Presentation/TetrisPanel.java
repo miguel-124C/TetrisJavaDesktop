@@ -1,4 +1,4 @@
-package Presentation.panel;
+package Presentation;
 
 import Classes.Display;
 import Classes.Matrix;
@@ -10,7 +10,6 @@ public class TetrisPanel extends JPanel {
     private final Matrix matrix;
     private final Display display;
     private static final int CELL_SIZE = 30;
-    private final PanelDraw panelDraw = new PanelDraw(CELL_SIZE);
 
     public TetrisPanel(Matrix matrix, Display display) {
         this.matrix = matrix;
@@ -28,10 +27,13 @@ public class TetrisPanel extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                 RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Dibujar la cuadrícula
-//        drawGrid(g2d);
-        // Dibujar la pieza actual (fantasma)
-        panelDraw.drawCurrentPiece(g2d, display.getCurrentPiece());
+        try {
+            matrix.drawGrid(g2d);
+            matrix.drawAllPieces(g2d);
+            matrix.drawCurrentPiece(g2d, display);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void updateMatrix() {

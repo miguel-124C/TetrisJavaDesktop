@@ -8,6 +8,7 @@ public class Display {
     private Piece nextPiece = null;
     private int score = 0;
     private  int level = 1;
+    private int cantLines = 0;
 
     public void changePiece() {
         currentPiece = (nextPiece != null) ? nextPiece : getRandomPiece();
@@ -18,6 +19,11 @@ public class Display {
         var type = TypePiece.random();
         return Piece.createRandomPiece(color, type);
     }
+
+    public void addLines( int cantLines ) {
+        this.cantLines += cantLines;
+    }
+    public int getLines() { return cantLines; }
 
     public Piece getCurrentPiece() { return currentPiece; }
     public Piece getNextPiece() { return nextPiece; }

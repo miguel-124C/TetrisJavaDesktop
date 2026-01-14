@@ -4,87 +4,93 @@ import Interfaces.Colors;
 import Interfaces.Cords;
 import Interfaces.TypePiece;
 
-import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Piece {
-    private final List<Cords> cords;
+    private List<Cords> cords;
+    private List<Cords> cordsShadow;
     private final Colors color;
     private final TypePiece typePiece;
     public boolean canMove = true;
+    // Cord for piece down
+    private int cordYMay = 0;
+    private int cordYMen = 100;
+    private int cordXLeft = -1;
+    private int cordXRight = 100;
     private Piece(List<Cords> cords, Colors color, TypePiece type) {
         this.color = color;
         this.cords = cords;
+        moveAndSetCordXRightLeft( false, false );
         this.typePiece = type;
     }
     public static Piece createRandomPiece(Colors color, TypePiece type) {
-        var cords = getCordsByType(type);
+        var cords = TypePiece.getCordsByType(type);
         return new Piece(cords, color, type);
-    }
-
-    public static List<Cords> getCordsByType( TypePiece type ) {
-        switch ( type ) {
-            case I -> {
-                return List.of(
-                    new Cords(0, 0), new Cords(0, 1),
-                    new Cords(0, 2), new Cords(0, 3)
-                );
-            }
-            case J -> {
-                return List.of(
-                    new Cords(1, 0), new Cords(1, 1),
-                    new Cords(1, 2), new Cords(0, 2)
-                );
-            }
-            case L -> {
-                return List.of(
-                    new Cords(0, 0), new Cords(0, 1),
-                    new Cords(0, 2), new Cords(1, 2)
-                );
-            }
-            case O -> {
-                return List.of(
-                    new Cords(0, 0), new Cords(1, 0),
-                    new Cords(0, 1), new Cords(1, 1)
-                );
-            }
-            case S -> {
-                return List.of(
-                    new Cords(0, 1), new Cords(1, 1),
-                    new Cords(1, 0), new Cords(2, 0)
-                );
-            }
-            case Z -> {
-                return List.of(
-                    new Cords(0, 0), new Cords(1, 0),
-                    new Cords(1, 1), new Cords(2, 1)
-                );
-            }
-            case T -> {
-                return List.of(
-                    new Cords(1, 0), new Cords(0, 1),
-                    new Cords(1, 1), new Cords(2, 1)
-                );
-            }
-            default -> {}
-        }
-        return null;
     }
 
     /* Direction: Right = True, Left = False */
     public void Move( boolean direction ) {
         if (!canMove) return;
-        cords.forEach(c -> c.x += (direction) ? 1 : -1);
+        moveAndSetCordXRightLeft( true, direction );
     }
 
     public void MoveDown() {
         if (!canMove) return;
-        cords.forEach(c -> c.y += 1);
+        cords.forEach(c -> {
+            c.y += 1;
+            if ( c.y > cordYMay ) {
+                cordYMay = c.y;
+            }
+        });
+    }
+    public void moveToShadow() {
+        if (cordsShadow == null) return;
+        List<Cords> newCords = new ArrayList<>(cordsShadow);
+        for (int i = 0; i < cordsShadow.size(); i++) {
+            newCords.set(i, cordsShadow.get(i));
+        }
+
+        cords = newCords;
+    }
+    private void moveAndSetCordXRightLeft( boolean move, boolean direction ) {
+        var cordXMen = 100;
+        var cordXMay = 0;
+        for(var cord : cords) {
+            if ( move ) {
+                cord.x += (direction) ? 1 : -1;
+            }
+            if ( cord.x < cordXMen ) cordXMen = cord.x;
+            if ( cord.x > cordXMay ) cordXMay = cord.x;
+        }
+        cordXLeft = cordXMen;
+        cordXRight = cordXMay;
     }
 
+    public void rotate() {
+        List<Cords> newList = new ArrayList<>(cords);
+        var pivot = new Cords(cords.get(0).x, cords.get(0).y);
+        for (int i = 1; i < cords.size(); i++) {
+            var newCords = cords.get(i).rotateCord(pivot);
+            newList.set(i, newCords);
+        }
+        cords = newList;
+    }
+
+    public int getCordYMay() { return cordYMay; }
+    public int getCordYMen() { return cordYMen; }
+    public void setCordYMen(int cordYMen) { this.cordYMen = cordYMen; }
+    public int getCordXLeft() { return cordXLeft; }
+    public int getCordXRight() { return cordXRight; }
     public List<Cords> getCords() {
         return cords;
     }
     public TypePiece getTypePiece() { return typePiece; }
     public Colors getColor() { return color; }
+    public List<Cords> getCordsShadow() {
+        return cordsShadow;
+    }
+    public void setCordsShadow(List<Cords> cordsShadow) {
+        this.cordsShadow = cordsShadow;
+    }
 }
