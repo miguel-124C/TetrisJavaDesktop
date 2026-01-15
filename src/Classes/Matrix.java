@@ -138,14 +138,15 @@ public class Matrix {
         currentPiece.getCords().forEach( c -> {
             drawBlock(g2d, c.x, c.y, Colors.getColor(pieceColor));
         });
-        var cordsShadowPiece = getCordsShadowPiece(currentPiece);
-        currentPiece.setCordsShadow(cordsShadowPiece);
+        if ( currentPiece.getCanDrawShadow() ) {
+            currentPiece.setCordsShadow(getCordsShadowPiece(currentPiece));
 
-        var cordsShadow = currentPiece.getCordsShadow();
-        if (cordsShadow != null) {
-            cordsShadow.forEach( c -> {
-                drawShadow(g2d, c.x, c.y);
-            });
+            var cordsShadow = currentPiece.getCordsShadow();
+            if (cordsShadow != null) {
+                cordsShadow.forEach( c -> {
+                    drawShadow(g2d, c.x, c.y);
+                });
+            }
         }
     }
     public void insertPiece(Display display) throws Exception{
@@ -171,13 +172,10 @@ public class Matrix {
         return hasCollisionByCords(piece.getCords());
     }
     private boolean hasCollisionByCords(List<Cords> cords) throws Exception{
-        for (int i = heightValues; i < ROW; i++) {
-            for (int j = 0; j < COL; j++) {
-                if (getValue(i, j) != empty) {
-                    for(Cords cord : cords)
-                        if ( cord.x == j && cord.y + 1 == i ) return true;
-                }
-            }
+        for(Cords cord : cords) {
+            if (cord.y + 1 >= ROW) return  true;
+            var valueInDirection = getValue(cord.y + 1, cord.x);
+            if (valueInDirection != empty) return true;
         }
 
         return false;
@@ -221,22 +219,18 @@ public class Matrix {
 
     public boolean canMoveX( Piece piece, boolean direction ) {
         try {
-            for (int i = heightValues; i < 20; i++) {
-                for (int j = 0; j < 10; j++) {
-                    if (getValue(i, j) != empty) {
-                        for(Cords cord : piece.getCords()) {
-                            if ((cord.x + 1 == j && cord.y == i) || (cord.x - 1 == j && cord.y == i))
-                                return false;
-                        }
-                    }
+            if ( piece.getCordYMay() + 4 >= heightValues ) {
+                for(Cords cord : piece.getCords()) {
+                    var cordX = direction ? 1 : -1;
+                    var valueInDirection = getValue(cord.y, cord.x + cordX);
+                    if ( valueInDirection != empty ) return false;
                 }
             }
-            if ( !direction && piece.getCordXLeft() - 1 >= 0 ) return true;
-            return direction && piece.getCordXRight() + 1 < COL;
-        } catch ( Exception e) {
-            System.out.println(e);
-            return false;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        if ( !direction && piece.getCordXLeft() - 1 >= 0 ) return true;
+        return direction && piece.getCordXRight() + 1 < COL;
     }
     public void drawGrid(Graphics2D g2d) {
         g2d.setColor(new Color(40, 40, 40));
@@ -255,14 +249,24 @@ public class Matrix {
 
     public void drawAllPieces(Graphics2D g2d) throws Exception {
         if ( numTermDistinctEmpty > 0 ) {
-            for (int i = heightValues; i < ROW; i++) {
-                for (int j = 0; j < COL; j++) {
+            traverseValueMatrix(heightValues, 0, ROW, COL, (value, row, col)-> {
+                if (value != empty) drawBlock( g2d, col, row, Colors.getColor( value ) );
+            });
+        }
+    }
+
+    @FunctionalInterface
+    interface GetValueMatrixAndCords { void setValueAndCords(Colors color, int row, int col); }
+    private void traverseValueMatrix(int initRow, int initCol, int toRow, int toCol, GetValueMatrixAndCords cb) {
+        try {
+            for (int i = initRow; i < toRow; i++) {
+                for (int j = initCol; j < toCol; j++) {
                     var value = getValue(i, j);
-                    if (value != empty) {
-                        drawBlock( g2d, j, i, Colors.getColor( value ) );
-                    }
+                    cb.setValueAndCords(value, i, j);
                 }
             }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
