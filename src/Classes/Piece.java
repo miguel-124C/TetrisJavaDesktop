@@ -10,6 +10,7 @@ import java.util.List;
 public class Piece {
     private List<Cords> cords;
     private List<Cords> cordsShadow;
+    private boolean canDrawShadow = true;
     private final Colors color;
     private final TypePiece typePiece;
     public boolean canMove = true;
@@ -52,6 +53,7 @@ public class Piece {
         }
 
         cords = newCords;
+        canDrawShadow = false;
     }
     private void moveAndSetCordXRightLeft( boolean move, boolean direction ) {
         var cordXMen = 100;
@@ -91,6 +93,15 @@ public class Piece {
         return cordsShadow;
     }
     public void setCordsShadow(List<Cords> cordsShadow) {
+        if (!canDrawShadow) return;
         this.cordsShadow = cordsShadow;
+
+        var cordMenY = 900;
+        for(var c : cordsShadow) {
+            if ( c.y < cordMenY) cordMenY = c.y;
+        }
+        if ( this.getCordYMay() >= cordMenY ) canDrawShadow = false;
     }
+
+    public boolean getCanDrawShadow() { return canDrawShadow; }
 }
