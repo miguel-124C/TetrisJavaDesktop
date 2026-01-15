@@ -90,20 +90,17 @@ public class TetrisFrame extends JFrame {
         display.changePiece();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                sidePanel.updatePanel();
-                var currentPiece = display.getCurrentPiece();
-                if (!currentPiece.canMove) {
-                    display.changePiece();
-                }
-                display.getCurrentPiece().MoveDown();
-
-                tetrisPanel.updateMatrix();
-
-                checkGameOver(scheduler);
+        Runnable task = () -> {
+            sidePanel.updatePanel();
+            var currentPiece = display.getCurrentPiece();
+            if (!currentPiece.canMove) {
+                display.changePiece();
             }
+            display.getCurrentPiece().MoveDown();
+
+            tetrisPanel.updateMatrix();
+
+            checkGameOver(scheduler);
         };
 
         scheduler.scheduleAtFixedRate(task, 1, 1000, TimeUnit.MILLISECONDS);
