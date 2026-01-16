@@ -14,9 +14,11 @@ import java.util.concurrent.TimeUnit;
 public class TetrisFrame extends JFrame {
     private final Matrix matrix = new Matrix(20, 10, Colors.BLACK);
     private final Display display = new Display();
+    private final MusicPlayer musicPlayer = new MusicPlayer();
     private JPanel mainPanel;
     private final TetrisPanel tetrisPanel;
     private final SidePanel sidePanel;
+
     public TetrisFrame() {
         setTitle("Tetris");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,6 +89,7 @@ public class TetrisFrame extends JFrame {
     }
 
     private void startGame() {
+        musicPlayer.reproduce("");
         display.changePiece();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 

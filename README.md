@@ -12,7 +12,7 @@ Una recreación clásica del juego Tetris desarrollada en Java para escritorio. 
 
 ## 📸 Capturas de Pantalla
 
-![Gameplay Screenshot](images/demo.png)
+![Gameplay Screenshot](assets/demo.png)
 <hr>
 
 ## ✨ Características
