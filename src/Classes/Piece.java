@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Piece {
     private List<Cords> cords;
+    private Cords pivot;
     private List<Cords> cordsShadow;
     private boolean canDrawShadow = true;
     private final Colors color;

@@ -89,7 +89,7 @@ public class TetrisFrame extends JFrame {
     }
 
     private void startGame() {
-        musicPlayer.reproduce("");
+        musicPlayer.reproduce("assets/tetrisTheme.wav");
         display.changePiece();
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -116,6 +116,7 @@ public class TetrisFrame extends JFrame {
         }
     }
     private void showGameOverDialog(JFrame parentFrame) {
+        musicPlayer.getClip().close();
         var confirmDialog = JOptionPane.showConfirmDialog(
                 parentFrame,
                 "¡Game Over!, Try again?",
