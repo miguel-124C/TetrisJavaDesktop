@@ -64,6 +64,8 @@ public class TetrisFrame extends JFrame {
                         break;
                     case KeyEvent.VK_DOWN:
                         currentPiece.MoveDown();
+                        display.setScore(display.getScore() + 1);
+                        sidePanel.updatePanel();
                         break;
                     case KeyEvent.VK_LEFT:
                         if (matrix.canMoveX( currentPiece, false )) {
@@ -78,6 +80,8 @@ public class TetrisFrame extends JFrame {
                     case KeyEvent.VK_SPACE:
                         try {
                             matrix.moveToShadow(display);
+                            sidePanel.updatePanel();
+                            display.changePiece();
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
