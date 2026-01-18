@@ -53,8 +53,8 @@ cd TetrisJavaDesktop
 ```
 * Compilar y Ejecutar si usas terminal:
 ```bash
-javac Main.java
-java Main
+javac src/Main.java
+java src/Main
 ```
 O simplemente abre el proyecto en tu IDE favorito y ejecuta la clase `Main`.
 
