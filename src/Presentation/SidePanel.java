@@ -1,7 +1,6 @@
 package Presentation;
 
 import Classes.Display;
-import Classes.Piece;
 import Interfaces.Colors;
 import Interfaces.TypePiece;
 
