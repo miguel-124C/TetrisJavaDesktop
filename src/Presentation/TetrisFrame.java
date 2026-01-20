@@ -56,7 +56,7 @@ public class TetrisFrame extends JFrame {
     private void addEvents( JPanel gamePanel ) {
         gamePanel.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 var currentPiece = display.getCurrentPiece();
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
