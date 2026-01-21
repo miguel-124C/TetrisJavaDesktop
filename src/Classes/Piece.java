@@ -71,6 +71,7 @@ public class Piece {
     }
 
     public void rotate() {
+        if ( typePiece == TypePiece.O ) return;
         List<Cords> newList = new ArrayList<>(cords);
         var pivot = new Cords(cords.get(0).x, cords.get(0).y);
         for (int i = 1; i < cords.size(); i++) {
