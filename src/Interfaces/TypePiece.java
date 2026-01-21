@@ -16,44 +16,44 @@ public enum TypePiece {
         switch ( type ) {
             case I -> {
                 return List.of(
-                        new Cords(0, 0), new Cords(0, 1),
-                        new Cords(0, 2), new Cords(0, 3)
+                        new Cords(3, 0), new Cords(4, 0),
+                        new Cords(5, 0), new Cords(6, 0)
                 );
             }
             case J -> {
                 return List.of(
-                        new Cords(1, 0), new Cords(1, 1),
-                        new Cords(1, 2), new Cords(0, 2)
+                        new Cords(3, 0), new Cords(3, 1),
+                        new Cords(4, 1), new Cords(5, 1)
                 );
             }
             case L -> {
                 return List.of(
-                        new Cords(0, 0), new Cords(0, 1),
-                        new Cords(0, 2), new Cords(1, 2)
+                        new Cords(5, 0), new Cords(5, 1),
+                        new Cords(4, 1), new Cords(3, 1)
                 );
             }
             case O -> {
                 return List.of(
-                        new Cords(0, 0), new Cords(1, 0),
-                        new Cords(0, 1), new Cords(1, 1)
+                        new Cords(4, 0), new Cords(5, 0),
+                        new Cords(4, 1), new Cords(5, 1)
                 );
             }
             case S -> {
                 return List.of(
-                        new Cords(0, 1), new Cords(1, 1),
-                        new Cords(1, 0), new Cords(2, 0)
+                        new Cords(3, 1), new Cords(4, 1),
+                        new Cords(4, 0), new Cords(5, 0)
                 );
             }
             case Z -> {
                 return List.of(
-                        new Cords(0, 0), new Cords(1, 0),
-                        new Cords(1, 1), new Cords(2, 1)
+                        new Cords(3, 0), new Cords(4, 0),
+                        new Cords(4, 1), new Cords(5, 1)
                 );
             }
             case T -> {
                 return List.of(
-                        new Cords(1, 0), new Cords(0, 1),
-                        new Cords(1, 1), new Cords(2, 1)
+                        new Cords(4, 0), new Cords(3, 1),
+                        new Cords(4, 1), new Cords(5, 1)
                 );
             }
             default -> {}
