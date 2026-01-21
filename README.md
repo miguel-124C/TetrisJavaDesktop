@@ -26,8 +26,8 @@ Una recreación clásica del juego Tetris desarrollada en Java para escritorio. 
 
 ## 🛠️ Tecnologías Utilizadas
 
-* **Lenguaje:** Java (JDK [versión 17])
-* **Biblioteca Gráfica:** [Swing / AWT / JavaFX]
+* **Lenguaje:** Java (JDK versión 17)
+* **Biblioteca Gráfica:** Swing,  AWT
 * **IDE Recomendado:** IntelliJ IDEA / Eclipse / NetBeans
 
 <hr>
@@ -53,8 +53,8 @@ cd TetrisJavaDesktop
 ```
 * Compilar y Ejecutar si usas terminal:
 ```bash
-javac src/Main.java
-java src/Main
+javac -encoding UTF-8 -d out src/*.java src/Classes/*.java src/Interfaces/*.java src/Presentation/*.java
+java -cp out Main
 ```
 O simplemente abre el proyecto en tu IDE favorito y ejecuta la clase `Main`.
 
