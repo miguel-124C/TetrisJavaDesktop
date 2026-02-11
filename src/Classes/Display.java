@@ -1,8 +1,5 @@
 package Classes;
 
-import Interfaces.Colors;
-import Interfaces.TypePiece;
-
 public class Display {
     private Piece currentPiece;
     private Piece nextPiece = null;
@@ -11,13 +8,8 @@ public class Display {
     private int cantLines = 0;
 
     public void changePiece() {
-        currentPiece = (nextPiece != null) ? nextPiece : getRandomPiece();
-        nextPiece = getRandomPiece();
-    }
-    private Piece getRandomPiece() {
-        var color = Colors.random();
-        var type = TypePiece.random();
-        return Piece.createRandomPiece(color, type);
+        currentPiece = (nextPiece != null) ? nextPiece : Piece.createRandomPiece();
+        nextPiece = Piece.createRandomPiece();
     }
 
     public void addLines( int cantLines ) {

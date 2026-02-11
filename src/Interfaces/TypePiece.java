@@ -60,4 +60,18 @@ public enum TypePiece {
         }
         return null;
     }
+
+    public static Cords setInitialPivot(TypePiece type) {
+        switch ( type ) {
+            case I -> {
+                return new Cords(4, 0);
+            }
+            case J, L, S, Z, T -> {
+                return new Cords(4, 1);
+            }
+            default -> {}
+        }
+        return null;
+    }
+
 }

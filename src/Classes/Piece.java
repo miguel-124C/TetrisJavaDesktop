@@ -23,12 +23,14 @@ public class Piece {
     private Piece(List<Cords> cords, Colors color, TypePiece type) {
         this.color = color;
         this.cords = cords;
+        this.pivot = TypePiece.setInitialPivot(type);
         moveAndSetCordXRightLeft( false, false );
         this.typePiece = type;
     }
-    public static Piece createRandomPiece(Colors color, TypePiece type) {
+    public static Piece createRandomPiece() {
+        var type = TypePiece.random();
         var cords = TypePiece.getCordsByType(type);
-        return new Piece(cords, color, type);
+        return new Piece(cords, Colors.random(), type);
     }
 
     /* Direction: Right = True, Left = False */
@@ -45,6 +47,7 @@ public class Piece {
                 cordYMay = c.y;
             }
         });
+        pivot.y += 1;
     }
     public void moveToShadow() {
         if (cordsShadow == null) return;
@@ -62,6 +65,7 @@ public class Piece {
         for(var cord : cords) {
             if ( move ) {
                 cord.x += (direction) ? 1 : -1;
+                pivot.x += (direction) ? 1 : -1;
             }
             if ( cord.x < cordXMen ) cordXMen = cord.x;
             if ( cord.x > cordXMay ) cordXMay = cord.x;
@@ -73,8 +77,11 @@ public class Piece {
     public void rotate() {
         if ( typePiece == TypePiece.O ) return;
         List<Cords> newList = new ArrayList<>(cords);
-        var pivot = new Cords(cords.get(0).x, cords.get(0).y);
-        for (int i = 1; i < cords.size(); i++) {
+        for (int i = 0; i < cords.size(); i++) {
+            if (pivot.x == cords.get(i).x && pivot.y == cords.get(i).y ) {
+                newList.set(i, cords.get(i));
+                continue;
+            }
             var newCords = cords.get(i).rotateCord(pivot);
             newList.set(i, newCords);
         }
